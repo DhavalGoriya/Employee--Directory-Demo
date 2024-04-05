@@ -1,0 +1,21 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "nodeVersion": "16.20.0",
+    "sdksVersions": {
+      "@microsoft/microsoft-graph-client": "3.0.2",
+      "@microsoft/teams-js": "2.12.0"
+    },
+    "version": "1.18.2",
+    "libraryName": "employee-directory-demo",
+    "libraryId": "497edbdb-66f7-444c-9d7c-c32affa272b9",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "employee-directory-demo",
+    "solutionShortDescription": "employee-directory-demo description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}
