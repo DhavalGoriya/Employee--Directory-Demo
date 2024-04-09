@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import type { IEmployeeDemoProps } from './IEmployeeDemoProps';
-import { DetailsList,PrimaryButton } from 'office-ui-fabric-react';
+import { DetailsList,PrimaryButton,TextField,DefaultButton } from 'office-ui-fabric-react';
 //import { escape } from '@microsoft/sp-lodash-subset';
 import{ MSGraphClientV3 } from "@microsoft/sp-http";
 
@@ -45,7 +45,18 @@ public GetUser=():void=> {
       });
     });
 };
-
+/**
+ * searchResult
+ */
+public searchResult=(searchTerm:string):void => {
+ 
+   const filteredUsers = this.alluser.filter((user=>
+    user.displayName.toLowerCase().includes(searchTerm.toLowerCase())||
+    user.mail.toLowerCase().includes(searchTerm.toLowerCase())||
+    user.jobTitle.toLowerCase().includes(searchTerm.toLowerCase())
+   ));
+   this.setState({userstate:filteredUsers});
+}
   public render(): React.ReactElement<IEmployeeDemoProps> {
     
 
@@ -55,6 +66,21 @@ public GetUser=():void=> {
         onClick={this.GetUser}
         ></PrimaryButton>
         <DetailsList items={this.state.userstate}></DetailsList>
+
+    <TextField     
+    required={true}     
+    name="txtSearchText"     
+    placeholder="Search..." 
+    onChange={(e, newValue) => this.searchResult(newValue || '')}   
+    ></TextField>
+    <DetailsList items={this.state.userstate}></DetailsList>
+
+    <DefaultButton    
+     data-automation-id="search"    
+     target="_blank"    
+     title="Search"
+     >
+     </DefaultButton>
 
       </div>
     );
