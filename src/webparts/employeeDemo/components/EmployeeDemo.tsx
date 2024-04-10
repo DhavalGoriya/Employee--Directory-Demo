@@ -10,18 +10,26 @@ export interface Iuser {
   displayName: string;
   mail: string;
   surname: string;
+
+
+}
+export interface IData {
+  userID: string;
+  managerID: string;
 }
 export interface IuserState { // to pass the array data in state.
   userstate: Iuser[];
   searchTerm: string;
+  managerstate: IData[];
 }
-
+userManagaer: { };
 export default class EmployeeDemo extends React.Component<IEmployeeDemoProps, IuserState, {}> {
   constructor(props: IEmployeeDemoProps) {
     super(props);
     this.state = {
       userstate: [],
-      searchTerm: ''
+      searchTerm: '',
+      managerstate:[]
     };
   }
 
@@ -30,6 +38,12 @@ export default class EmployeeDemo extends React.Component<IEmployeeDemoProps, Iu
   }
 
   public alluser: Iuser[] = []; //blank array to store value form we get from api.
+  public userData: IData[] = [];
+
+
+
+
+
   /**
    * GetUser=
    =>*/
@@ -55,21 +69,51 @@ export default class EmployeeDemo extends React.Component<IEmployeeDemoProps, Iu
           });
       });
   };
+  
   /**
    * searchResult
    */
   public searchResult = (searchTerm: string): void => {
 
-    const filteredUsers = this.alluser.filter((user =>
-      user.displayName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.mail?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.surname?.toLowerCase().includes(searchTerm.toLowerCase())
-    ));
-    this.setState({ userstate: filteredUsers });
-  }
+            const filteredUsers = this.alluser.filter((user =>
+              user.displayName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              user.mail?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              user.surname?.toLowerCase().includes(searchTerm.toLowerCase())
+            ));
+            this.setState({ userstate: filteredUsers });
+          } 
 
-  public render(): React.ReactElement<IEmployeeDemoProps> {
-    return (
+/**
+   * mapUserManager=
+   */
+
+
+public mapUserManager = (): void => {
+  this.props.context.msGraphClientFactory.getClient("3")
+    .then((Client: MSGraphClientV3) => {
+
+      Client.api("users/id | userPrincipalName?$expand=directReports")
+        .version("v1.0").select("UserID,mangerID")
+        .get((err
+          , res) => {
+          if (err) {
+            console.log("error occurred", err);
+          }
+          console.log("error occured", err);
+          console.log("Response", res);
+          res.value.map((results: any) => {
+            this.userData.push({
+              userID: results.userID, managerID: results.managerID
+            });
+          });
+            this.setState({managerstate:this.userData});
+        });
+      });
+    }
+          
+
+  public render(): React.ReactElement < IEmployeeDemoProps > {
+            return(
       <div>
         <TextField
           className={styles.row}
@@ -84,7 +128,7 @@ export default class EmployeeDemo extends React.Component<IEmployeeDemoProps, Iu
         ></PrimaryButton>
         <DetailsList items={this.state.userstate}></DetailsList>
 
-      </div>
+      </div >
     );
-  }
+      }
 }
